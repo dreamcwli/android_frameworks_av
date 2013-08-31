@@ -61,6 +61,9 @@ LOCAL_SRC_FILES += ../libnbaio/roundup.c
 LOCAL_CFLAGS += -DANDROID_SMP=$(if $(findstring true,$(TARGET_CPU_SMP)),1,0)
 LOCAL_SRC_FILES += SingleStateQueue.cpp
 LOCAL_CFLAGS += -DSINGLE_STATE_QUEUE_INSTANTIATIONS='"SingleStateQueueInstantiations.cpp"'
+ifeq ($(TARGET_BOARD_PLATFORM),tegra)
+	LOCAL_CFLAGS += -DENABLE_DEPRECATED_AUDIOTRACK_API
+endif
 
 LOCAL_SHARED_LIBRARIES := \
 	libui liblog libcutils libutils libbinder libsonivox libicuuc libexpat \

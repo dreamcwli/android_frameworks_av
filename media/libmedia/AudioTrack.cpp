@@ -124,6 +124,32 @@ AudioTrack::AudioTrack(
             0 /*sharedBuffer*/, false /*threadCanCallJava*/, sessionId);
 }
 
+#ifdef ENABLE_DEPRECATED_AUDIOTRACK_API
+// DEPRECATED
+AudioTrack::AudioTrack(
+        int streamType,
+        uint32_t sampleRate,
+        int format,
+        int channelMask,
+        int frameCount,
+        uint32_t flags,
+        callback_t cbf,
+        void* user,
+        int notificationFrames,
+        int sessionId)
+    : mStatus(NO_INIT),
+      mIsTimed(false),
+      mPreviousPriority(ANDROID_PRIORITY_NORMAL),
+      mPreviousSchedulingGroup(SP_DEFAULT),
+      mProxy(NULL)
+{
+    mStatus = set((audio_stream_type_t)streamType, sampleRate, (audio_format_t)format,
+            (audio_channel_mask_t) channelMask,
+            frameCount, (audio_output_flags_t)flags, cbf, user, notificationFrames,
+            0 /*sharedBuffer*/, false /*threadCanCallJava*/, sessionId);
+}
+#endif
+
 AudioTrack::AudioTrack(
         audio_stream_type_t streamType,
         uint32_t sampleRate,
@@ -325,6 +351,50 @@ status_t AudioTrack::set(
     AudioSystem::acquireAudioSessionId(mSessionId);
     return NO_ERROR;
 }
+
+#ifdef ENABLE_DEPRECATED_AUDIOTRACK_API
+status_t AudioTrack::initCheck() const
+{
+    return mStatus;
+}
+
+// -------------------------------------------------------------------------
+
+uint32_t AudioTrack::latency() const
+{
+    return mLatency;
+}
+
+audio_stream_type_t AudioTrack::streamType() const
+{
+    return mStreamType;
+}
+
+audio_format_t AudioTrack::format() const
+{
+    return mFormat;
+}
+
+uint32_t AudioTrack::channelCount() const
+{
+    return mChannelCount;
+}
+
+uint32_t AudioTrack::frameCount() const
+{
+    return mFrameCount;
+}
+
+size_t AudioTrack::frameSize() const
+{
+    return mFrameSize;
+}
+
+sp<IMemory> AudioTrack::sharedBuffer() const
+{
+    return mSharedBuffer;
+}
+#endif
 
 // -------------------------------------------------------------------------
 

@@ -165,6 +165,20 @@ public:
                                     int notificationFrames = 0,
                                     int sessionId        = 0);
 
+#ifdef ENABLE_DEPRECATED_AUDIOTRACK_API
+                        // DEPRECATED
+                        AudioTrack( int streamType,
+                                    uint32_t sampleRate  = 0,
+                                    int format = AUDIO_FORMAT_DEFAULT,
+                                    int channelMask      = 0,
+                                    int frameCount       = 0,
+                                    uint32_t flags       = (uint32_t) AUDIO_OUTPUT_FLAG_NONE,
+                                    callback_t cbf       = 0,
+                                    void* user           = 0,
+                                    int notificationFrames = 0,
+                                    int sessionId        = 0);
+#endif
+
     /* Creates an audio track and registers it with AudioFlinger.
      * With this constructor, the track is configured for static buffer mode.
      * The format must not be 8-bit linear PCM.
@@ -220,30 +234,54 @@ public:
      * an uninitialized AudioTrack produces undefined results.
      * See set() method above for possible return codes.
      */
+#ifdef ENABLE_DEPRECATED_AUDIOTRACK_API
+            status_t    initCheck() const;
+#else
             status_t    initCheck() const   { return mStatus; }
+#endif
 
     /* Returns this track's estimated latency in milliseconds.
      * This includes the latency due to AudioTrack buffer size, AudioMixer (if any)
      * and audio hardware driver.
      */
+#ifdef ENABLE_DEPRECATED_AUDIOTRACK_API
+            uint32_t    latency() const;
+#else
             uint32_t    latency() const     { return mLatency; }
+#endif
 
     /* getters, see constructors and set() */
 
+#ifdef ENABLE_DEPRECATED_AUDIOTRACK_API
+            audio_stream_type_t streamType() const;
+            audio_format_t format() const;
+#else
             audio_stream_type_t streamType() const { return mStreamType; }
             audio_format_t format() const   { return mFormat; }
+#endif
 
     /* Return frame size in bytes, which for linear PCM is channelCount * (bit depth per channel / 8).
      * channelCount is determined from channelMask, and bit depth comes from format.
      * For non-linear formats, the frame size is typically 1 byte.
      */
+#ifdef ENABLE_DEPRECATED_AUDIOTRACK_API
+            uint32_t    channelCount() const;
+
+            uint32_t    frameCount() const;
+            size_t      frameSize() const;
+#else
             uint32_t    channelCount() const { return mChannelCount; }
 
             uint32_t    frameCount() const  { return mFrameCount; }
             size_t      frameSize() const   { return mFrameSize; }
+#endif
 
     /* Return the static buffer specified in constructor or set(), or 0 for streaming mode */
+#ifdef ENABLE_DEPRECATED_AUDIOTRACK_API
+            sp<IMemory> sharedBuffer() const;
+#else
             sp<IMemory> sharedBuffer() const { return mSharedBuffer; }
+#endif
 
     /* After it's created the track is not active. Call start() to
      * make it active. If set, the callback will start being called.
