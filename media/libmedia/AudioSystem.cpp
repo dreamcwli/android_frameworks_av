@@ -205,6 +205,13 @@ int AudioSystem::logToLinear(float volume)
     return volume ? 100 - int(dBConvertInverse * log(volume) + 0.5) : 0;
 }
 
+#ifdef ENABLE_DEPRECATED_AUDIOSYSTEM_API
+// DEPRECATED
+status_t AudioSystem::getOutputSamplingRate(int* samplingRate, int streamType) {
+    return getOutputSamplingRate(samplingRate, (audio_stream_type_t)streamType);
+}
+#endif
+
 status_t AudioSystem::getOutputSamplingRate(uint32_t* samplingRate, audio_stream_type_t streamType)
 {
     audio_io_handle_t output;
@@ -246,6 +253,13 @@ status_t AudioSystem::getSamplingRate(audio_io_handle_t output,
 
     return NO_ERROR;
 }
+
+#ifdef ENABLE_DEPRECATED_AUDIOSYSTEM_API
+// DEPRECATED
+status_t AudioSystem::getOutputFrameCount(int* frameCount, int streamType) {
+    return getOutputFrameCount(frameCount, (audio_stream_type_t)streamType);
+}
+#endif
 
 status_t AudioSystem::getOutputFrameCount(size_t* frameCount, audio_stream_type_t streamType)
 {
@@ -580,6 +594,17 @@ audio_policy_forced_cfg_t AudioSystem::getForceUse(audio_policy_force_use_t usag
     return aps->getForceUse(usage);
 }
 
+#ifdef ENABLE_DEPRECATED_AUDIOSYSTEM_API
+audio_io_handle_t AudioSystem::getOutput(audio_stream_type_t stream,
+                                    uint32_t samplingRate,
+                                    uint32_t format,
+                                    uint32_t channels,
+                                    audio_policy_output_flags_t flags)
+{
+    return getOutput(stream, samplingRate, (audio_format_t)format, (audio_channel_mask_t)channels,
+            flags);
+}
+#endif
 
 audio_io_handle_t AudioSystem::getOutput(audio_stream_type_t stream,
                                     uint32_t samplingRate,

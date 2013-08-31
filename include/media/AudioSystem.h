@@ -30,6 +30,9 @@
 namespace android {
 
 typedef void (*audio_error_callback)(status_t err);
+#ifdef ENABLE_DEPRECATED_AUDIOSYSTEM_API
+typedef audio_output_flags_t audio_policy_output_flags_t;
+#endif
 
 class IAudioPolicyService;
 class String8;
@@ -112,6 +115,14 @@ public:
                                audio_stream_type_t stream,
                                uint32_t* latency);
 
+#ifdef ENABLE_DEPRECATED_AUDIOSYSTEM_API
+    // DEPRECATED
+    static status_t getOutputSamplingRate(int* samplingRate, int stream = AUDIO_STREAM_DEFAULT);
+
+    // DEPRECATED
+    static status_t getOutputFrameCount(int* frameCount, int stream = AUDIO_STREAM_DEFAULT);
+#endif
+
     static bool routedToA2dpOutput(audio_stream_type_t streamType);
 
     static status_t getInputBufferSize(uint32_t sampleRate, audio_format_t format,
@@ -193,11 +204,24 @@ public:
     static status_t setPhoneState(audio_mode_t state);
     static status_t setForceUse(audio_policy_force_use_t usage, audio_policy_forced_cfg_t config);
     static audio_policy_forced_cfg_t getForceUse(audio_policy_force_use_t usage);
+#ifdef ENABLE_DEPRECATED_AUDIOSYSTEM_API
+    static audio_io_handle_t getOutput(audio_stream_type_t stream,
+                                        uint32_t samplingRate = 0,
+                                        uint32_t format = AUDIO_FORMAT_DEFAULT,
+                                        uint32_t channels = AUDIO_CHANNEL_OUT_STEREO,
+                                        audio_policy_output_flags_t flags = AUDIO_OUTPUT_FLAG_NONE);
+    static audio_io_handle_t getOutput(audio_stream_type_t stream,
+                                        uint32_t samplingRate,
+                                        audio_format_t format,
+                                        audio_channel_mask_t channelMask,
+                                        audio_output_flags_t flags);
+#else
     static audio_io_handle_t getOutput(audio_stream_type_t stream,
                                         uint32_t samplingRate = 0,
                                         audio_format_t format = AUDIO_FORMAT_DEFAULT,
                                         audio_channel_mask_t channelMask = AUDIO_CHANNEL_OUT_STEREO,
                                         audio_output_flags_t flags = AUDIO_OUTPUT_FLAG_NONE);
+#endif
     static status_t startOutput(audio_io_handle_t output,
                                 audio_stream_type_t stream,
                                 int session = 0);
